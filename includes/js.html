@@ -95,12 +95,16 @@
         var win_height = window.innerHeight;
         //console.info(top, height, win_height)
         var scroll_to = 0;
-        if (height >= win_height) {
-            scroll_to = top;
-        } else {
-            scroll_to = top - (win_height-height)/3.;
-        }
-        //console.info(top, height, win_height, scroll_to)
+	// Removed: The following worked only when searching for <div>
+	// items that had a height - <h2> elementes have a fixed
+	// height, thus something smarter is needed.
+        ////if (height >= win_height) {
+        ////    scroll_to = top;
+        ////} else {
+        ////    scroll_to = top - (win_height-height)/3.;
+        ////}
+        //////console.info(top, height, win_height, scroll_to)
+	scroll_to = top - (win_height/10);
 
         //$(next_elem).goTo();
         //window.scroll(0, scroll_to);
