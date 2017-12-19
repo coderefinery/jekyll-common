@@ -43,3 +43,92 @@
     });
     MathJax.Hub.Configured();
 </script>
+
+// Presentation mode scrolling
+<script>
+    // Add goTo method to elements
+    // http://stackoverflow.com/questions/4801655/how-to-go-to-a-specific-element-on-page
+    (function($) {
+        $.fn.goTo = function() {
+            $('html, body').animate({
+                scrollTop: $(this).offset().top //+ 'px'
+            }, 'fast');
+            return this; // for chaining...
+        }
+    })(jQuery);
+
+    function do_scroll(delta) {
+        // scroll `delta` sections forward or backwards
+
+        // els: list of all elements which are possible slide scroll
+        // targets
+        var els = $("h2");
+        var cur_pos = 0;
+
+        // cur_pos: Find where we currently are within the list of
+        // elements (this is cur_pos).
+        for(i=0; i<els.size(); i++) {
+            //if ( window.pageYOffset < els[i].getBoundingClientRect()["top"] ) {
+            //console.log(els[i], els[i].getBoundingClientRect()["top"])
+            if ( els[i].getBoundingClientRect()["top"] < window.innerHeight/2 ) {
+                continue;
+            }
+            //console.info(els[i], els[i].getBoundingClientRect()["top"]);
+            cur_pos = i-1;
+            //console.info(els[cur_pos])
+            break;
+        }
+
+        // Find next element we should scroll too, or return if we go
+        // out of bounds.
+        if ( i+delta < 0 || i+delta > els.size -1  ) {
+            return;
+        }
+        next_elem = els[cur_pos+delta];
+
+        // Figure out how to roughly center the element in the screen.
+        // The logic is, if it's less than the screen, center it but
+        // move it slightly to the top.
+        //var top = next_elem.getBoundingClientRect()["y"];
+        var top = $(next_elem).offset()["top"];  // top of this element
+        var height = next_elem.getBoundingClientRect()["height"];  // height of this element
+        var win_height = window.innerHeight;
+        //console.info(top, height, win_height)
+        var scroll_to = 0;
+        if (height >= win_height) {
+            scroll_to = top;
+        } else {
+            scroll_to = top - (win_height-height)/3.;
+        }
+        //console.info(top, height, win_height, scroll_to)
+
+        //$(next_elem).goTo();
+        //window.scroll(0, scroll_to);
+        $('html, body').animate({
+            scrollTop: scroll_to //+ 'px'
+        }, 'fast');
+
+    }
+
+    // Key handler
+    document.addEventListener('keydown', function (event) {
+        switch(event.which) {
+            case 37: // left
+                do_scroll(-1);
+                event.preventDefault();
+                return false;
+                break;
+	          //case 38: // up
+            case 39: // right
+                do_scroll(+1);
+                event.preventDefault();
+                return false;
+                break;
+            //case 40: // down
+            default:
+                return; // exit this handler for other keys
+        }
+    }, true)
+
+
+</script>
